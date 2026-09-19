@@ -56,6 +56,12 @@ export const lmoOverview = query({
       (i) => i.completedAt !== undefined && i.completedAt >= dayStart && i.completedAt < dayEnd,
     ).length;
 
+    const stillOpen = (status: string) => status !== "completed" && status !== "synced";
+    const overdue = mine.filter((i) => i.scheduledAt < now && stillOpen(i.status)).length;
+    const awaitingCertificate = mine.filter(
+      (i) => i.status === "completed" && i.result === "verified" && !i.certificateId,
+    ).length;
+
     const scopedApplications = district
       ? applications.filter(
           (a) => a.district === district || a.assignedOfficerId === officer?._id,
@@ -101,7 +107,13 @@ export const lmoOverview = query({
         (a) => a.type === "re_verification" && OPEN_STATUSES.includes(a.status),
       ).length,
       pendingResults: mine.filter(
-        (i) => i.status === "in_progress" || (i.status === "scheduled" && i.scheduledAt < now),
+        (i) =>
+          i.status === "in_progress" ||
+          (i.status === "completed" && i.result === "verified" && !i.certificateId) ||
+          (i.status === "scheduled" && i.scheduledAt < now),
+      ).length,
+      awaitingCertificate: mine.filter(
+        (i) => i.status === "completed" && i.result === "verified" && !i.certificateId,
       ).length,
     };
 
@@ -121,6 +133,8 @@ export const lmoOverview = query({
         pendingVerification,
         completedToday,
         expiringSoon,
+        overdue,
+        awaitingCertificate,
       },
       todayList,
       queue,

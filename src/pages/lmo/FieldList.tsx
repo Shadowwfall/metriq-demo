@@ -2,6 +2,14 @@ import { AppShell } from "@/components/app-shell";
 import { StatusBadge } from "@/components/status-badge";
 import { EmptyState, GovId, SectionHeader, StatCard } from "@/components/ui-bits";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
@@ -18,6 +26,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useMutation, useQuery } from "convex/react";
 import {
+  BadgeCheck,
   CalendarClock,
   CheckCircle2,
   CloudOff,
@@ -26,6 +35,8 @@ import {
   MapPin,
   RefreshCw,
   ScanLine,
+  SlidersHorizontal,
+  Timer,
   TriangleAlert,
   WifiOff,
 } from "lucide-react";
@@ -42,16 +53,53 @@ const STATE_STYLE: Record<SyncState, string> = {
   failed: "border-destructive/40 text-destructive",
 };
 
+const INSPECTION_STATUS_FILTERS = [
+  { value: "all", label: "Any status" },
+  { value: "scheduled", label: "Scheduled" },
+  { value: "in_progress", label: "Verification in progress" },
+  { value: "completed", label: "Result submitted" },
+  { value: "synced", label: "Certificate issued" },
+];
+
+const PRIORITY_FILTERS = [
+  { value: "all", label: "Any priority" },
+  { value: "urgent", label: "Urgent" },
+  { value: "high", label: "High" },
+  { value: "normal", label: "Normal" },
+];
+
 export default function FieldList() {
   const { t } = useI18n();
   const navigate = useNavigate();
   const online = useOnlineStatus();
-  const [tab, setTab] = useState<"today" | "upcoming" | "completed">("today");
+  const [tab, setTab] = useState<"today" | "overdue" | "upcoming" | "completed">("today");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [districtFilter, setDistrictFilter] = useState("all");
+  const [priorityFilter, setPriorityFilter] = useState("all");
+  const [dateFilter, setDateFilter] = useState("");
   const [queue, setQueue] = useState<OfflineRecord[]>([]);
   const [syncing, setSyncing] = useState(false);
 
-  const rows = useQuery(api.inspections.forOfficer, { window: tab });
+  const rows = useQuery(api.inspections.forOfficer, {
+    window: tab,
+    status: statusFilter === "all" ? undefined : statusFilter,
+    district: districtFilter === "all" ? undefined : districtFilter,
+    priority: priorityFilter === "all" ? undefined : priorityFilter,
+    from: dateFilter ? new Date(`${dateFilter}T00:00:00`).getTime() : undefined,
+    to: dateFilter ? new Date(`${dateFilter}T23:59:59`).getTime() : undefined,
+  });
+  const districtOptions = useQuery(api.masterData.districts, {});
+  const overview = useQuery(api.dashboard.lmoOverview, {});
   const submitResult = useMutation(api.inspections.submitResult);
+
+  const filtersActive =
+    statusFilter !== "all" || districtFilter !== "all" || priorityFilter !== "all" || dateFilter !== "";
+  const clearFilters = () => {
+    setStatusFilter("all");
+    setDistrictFilter("all");
+    setPriorityFilter("all");
+    setDateFilter("");
+  };
 
   const refreshQueue = useCallback(async () => {
     setQueue(await listQueue());
@@ -86,7 +134,11 @@ export default function FieldList() {
           device: deviceLabel(),
         });
         await patchRecord(record.id, { state: "synced", error: undefined });
-        toast.success(`${record.applicationNumber} synced`);
+        toast.success(
+          record.result === "verified"
+            ? `${record.applicationNumber} synced — open the record to approve and issue the certificate`
+            : `${record.applicationNumber} synced`,
+        );
       } catch (error) {
         const message = error instanceof Error ? error.message : "Sync failed";
         const alreadyClosed = /CONFLICT|already been submitted/i.test(message);
@@ -236,36 +288,109 @@ export default function FieldList() {
         ) : null}
       </section>
 
-      <section className="mb-6 grid gap-3 sm:grid-cols-3">
+      <section className="mb-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
           label={t("metric.todayInspections")}
-          value={tab === "today" ? (rows?.length ?? "—") : "—"}
+          value={overview?.metrics.todayInspections ?? "—"}
           icon={CalendarClock}
           tone="primary"
           emphasis
         />
-        <StatCard label={t("label.pending")} value={pending.length} icon={CloudOff} tone="caution" />
         <StatCard
-          label={t("label.synced")}
-          value={queue.filter((r) => r.state === "synced").length}
-          icon={CheckCircle2}
+          label="Overdue"
+          value={overview?.metrics.overdue ?? "—"}
+          hint="Past the appointment time and still open"
+          icon={Timer}
+          tone="caution"
+        />
+        <StatCard
+          label="Awaiting certificate"
+          value={overview?.metrics.awaitingCertificate ?? "—"}
+          hint="Verified results to approve"
+          icon={BadgeCheck}
           tone="verify"
+        />
+        <StatCard
+          label="Saved on this device"
+          value={pending.length}
+          hint={`${queue.filter((r) => r.state === "synced").length} already synced`}
+          icon={CloudOff}
         />
       </section>
 
       <SectionHeader
-        title="My inspections"
+        title="Assigned inspections"
+        description="Filter the assigned list by status, date, district or priority."
         icon={ScanLine}
         action={
           <Tabs value={tab} onValueChange={(value) => setTab(value as typeof tab)}>
             <TabsList>
               <TabsTrigger value="today">Today</TabsTrigger>
+              <TabsTrigger value="overdue">Overdue</TabsTrigger>
               <TabsTrigger value="upcoming">Upcoming</TabsTrigger>
               <TabsTrigger value="completed">Completed</TabsTrigger>
             </TabsList>
           </Tabs>
         }
       />
+
+      <div className="mb-5 flex flex-wrap items-center gap-2 rounded-xl border border-border bg-card p-3">
+        <span className="flex items-center gap-1.5 pr-1 text-xs font-medium text-muted-foreground">
+          <SlidersHorizontal className="size-3.5" aria-hidden="true" />
+          Filters
+        </span>
+        <Select value={statusFilter} onValueChange={setStatusFilter}>
+          <SelectTrigger className="h-9 w-48" aria-label="Filter by status">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {INSPECTION_STATUS_FILTERS.map((option) => (
+              <SelectItem key={option.value} value={option.value}>
+                {option.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <Select value={districtFilter} onValueChange={setDistrictFilter}>
+          <SelectTrigger className="h-9 w-44" aria-label="Filter by district">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Any district</SelectItem>
+            {(districtOptions ?? [])
+              .filter((d) => d.state === (overview?.state ?? d.state))
+              .map((district) => (
+                <SelectItem key={district._id} value={district.name}>
+                  {district.name}
+                </SelectItem>
+              ))}
+          </SelectContent>
+        </Select>
+        <Select value={priorityFilter} onValueChange={setPriorityFilter}>
+          <SelectTrigger className="h-9 w-40" aria-label="Filter by priority">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {PRIORITY_FILTERS.map((option) => (
+              <SelectItem key={option.value} value={option.value}>
+                {option.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <Input
+          type="date"
+          value={dateFilter}
+          onChange={(event) => setDateFilter(event.target.value)}
+          className="h-9 w-44"
+          aria-label="Filter by appointment date"
+        />
+        {filtersActive ? (
+          <Button variant="ghost" size="sm" onClick={clearFilters}>
+            Clear filters
+          </Button>
+        ) : null}
+      </div>
 
       {rows === undefined ? (
         <div className="space-y-3">

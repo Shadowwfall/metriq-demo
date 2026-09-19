@@ -117,6 +117,13 @@ export const detail = query({
       .withIndex("by_entity", (q) => q.eq("entityType", "application").eq("entityId", String(id)))
       .collect();
 
+    // Full verification history for the instrument, so an officer or reviewer can
+    // see how this instrument was treated in previous cycles.
+    const history = await ctx.db
+      .query("certificates")
+      .withIndex("by_instrument", (q) => q.eq("instrumentId", application.instrumentId))
+      .collect();
+
     return {
       application,
       organization,
@@ -126,6 +133,9 @@ export const detail = query({
       officer,
       gatc,
       certificate: cert ? withDerivedStatus(cert) : null,
+      certificateHistory: history
+        .map(withDerivedStatus)
+        .sort((a, b) => b.verificationDate - a.verificationDate),
       auditLogs: auditRows.sort((a, b) => b.at - a.at),
     };
   },

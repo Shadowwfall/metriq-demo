@@ -1,6 +1,14 @@
+import { QrCode as QrCodeBlock } from "@/components/qr-code";
 import { StatusBadge } from "@/components/status-badge";
 import { DataRow, LoadingBlock } from "@/components/ui-bits";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -16,12 +24,14 @@ import { useMutation, useQuery } from "convex/react";
 import {
   AlertTriangle,
   ArrowLeft,
+  BadgeCheck,
   Camera,
   Check,
   CheckCircle2,
   ChevronLeft,
   ChevronRight,
   CloudOff,
+  ExternalLink,
   ImagePlus,
   Loader2,
   LocateFixed,
@@ -238,6 +248,7 @@ export default function FieldVerification() {
   const startInspection = useMutation(api.inspections.start);
   const saveDraft = useMutation(api.inspections.saveDraft);
   const submitResult = useMutation(api.inspections.submitResult);
+  const issueCertificateNow = useMutation(api.inspections.issueCertificate);
 
   const [step, setStep] = useState(0);
   const [gps, setGps] = useState<Gps | null>(null);
@@ -253,7 +264,12 @@ export default function FieldVerification() {
   const [saving, setSaving] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [queued, setQueued] = useState<SyncState | null>(null);
-  const [completed, setCompleted] = useState<{ certificateId?: string | null; certificateNumber?: string | null } | null>(null);
+  const [completed, setCompleted] = useState<{
+    certificateId?: string | null;
+    certificateNumber?: string | null;
+  } | null>(null);
+  const [confirmIssue, setConfirmIssue] = useState(false);
+  const [issuing, setIssuing] = useState(false);
   const hydrated = useRef<string | null>(null);
 
   const inspection = data?.inspection;
@@ -261,6 +277,16 @@ export default function FieldVerification() {
   const instrument = data?.instrument;
   const organization = data?.organization;
   const category = data?.category;
+
+  // Present once a certificate exists for this inspection — either because the
+  // officer issued it in this session or on an earlier visit.
+  const issuedCertificate = useQuery(
+    api.certificates.get,
+    inspection?.certificateId ? { id: inspection.certificateId } : "skip",
+  );
+  const certificateId = completed?.certificateId ?? inspection?.certificateId ?? null;
+  const certificateNumber =
+    completed?.certificateNumber ?? issuedCertificate?.certificate.certificateNumber ?? null;
 
   // Hydrate local state from the persisted inspection record once.
   useEffect(() => {
@@ -276,6 +302,16 @@ export default function FieldVerification() {
     setRemarks(inspection.officerRemarks ?? "");
     setSignature(inspection.signatureDataUrl ?? null);
     setIdConfirmed(Boolean(inspection.instrumentIdentification));
+
+    // An inspection that was already submitted reopens on the report review
+    // screen, where the certificate can still be approved and issued.
+    if (inspection.status === "completed" || inspection.status === "synced") {
+      setQueued("synced");
+      setCompleted({
+        certificateId: inspection.certificateId ?? null,
+        certificateNumber: null,
+      });
+    }
 
     const saved = (inspection.measurements as Measurement[]) ?? [];
     if (saved.length) {
@@ -465,15 +501,12 @@ export default function FieldVerification() {
     };
 
     try {
-      const res = await submitResult({ id: inspection._id, ...payload });
+      await submitResult({ id: inspection._id, ...payload });
       setQueued("synced");
-      setCompleted({
-        certificateId: res.certificateId ?? null,
-        certificateNumber: res.certificateNumber ?? null,
-      });
+      setCompleted({ certificateId: null, certificateNumber: null });
       toast.success(
-        res.certificateNumber
-          ? `Certificate ${res.certificateNumber} issued`
+        result === "verified"
+          ? "Result submitted — review the report to issue the certificate"
           : "Verification result submitted",
       );
     } catch (error) {
@@ -508,6 +541,29 @@ export default function FieldVerification() {
       }
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  /** The approval gate: the officer confirms the reported outcome to certify. */
+  const approveAndIssue = async () => {
+    if (!inspection) return;
+    setIssuing(true);
+    try {
+      const res = await issueCertificateNow({ id: inspection._id, device: deviceLabel() });
+      setCompleted({
+        certificateId: res.certificateId ?? null,
+        certificateNumber: res.certificateNumber ?? null,
+      });
+      setConfirmIssue(false);
+      toast.success(`Certificate ${res.certificateNumber} issued`);
+    } catch (error) {
+      toast.error(
+        error instanceof Error
+          ? error.message.replace(/^.*:\s*/, "")
+          : "Could not issue the certificate",
+      );
+    } finally {
+      setIssuing(false);
     }
   };
 
@@ -560,68 +616,193 @@ export default function FieldVerification() {
     );
   }
 
-  /* ── submission confirmation ─────────────────────────────────────────── */
+  /* ── report review, certificate approval and confirmation ────────────── */
   if (completed || queued === "pending") {
+    const verified = result === "verified";
+    const issued = Boolean(certificateNumber);
+    const passedLoads = measurements.filter((m) => m.result === "pass").length;
+    const verifyUrl =
+      certificateNumber && typeof window !== "undefined"
+        ? `${window.location.origin}/verify/${certificateNumber}`
+        : "";
+
     return (
       <div className="min-h-screen bg-background px-4 py-8">
-        <div className="mx-auto max-w-lg">
+        <div className="mx-auto max-w-xl space-y-4">
           <div className="rounded-2xl border border-border bg-card p-6 text-center">
             <span
               className={cn(
                 "mx-auto flex size-14 items-center justify-center rounded-full",
                 queued === "pending"
                   ? "bg-[color-mix(in_oklab,var(--caution)_16%,transparent)] text-[color-mix(in_oklab,var(--caution)_65%,black)]"
-                  : "bg-[color-mix(in_oklab,var(--verify)_14%,transparent)] text-[color-mix(in_oklab,var(--verify)_70%,black)]",
+                  : issued
+                    ? "bg-[color-mix(in_oklab,var(--verify)_14%,transparent)] text-[color-mix(in_oklab,var(--verify)_70%,black)]"
+                    : "bg-primary/10 text-primary",
               )}
             >
               {queued === "pending" ? (
                 <CloudOff className="size-7" aria-hidden="true" />
+              ) : issued ? (
+                <BadgeCheck className="size-7" aria-hidden="true" />
               ) : (
                 <CheckCircle2 className="size-7" aria-hidden="true" />
               )}
             </span>
             <h1 className="mt-4 font-display text-xl font-bold tracking-tight">
               {queued === "pending"
-                ? "Record queued for sync"
-                : result === "verified"
-                  ? "Verification complete"
-                  : "Result submitted"}
+                ? "Record saved on this device"
+                : issued
+                  ? "Certificate issued"
+                  : verified
+                    ? "Result ready for approval"
+                    : "Result submitted"}
             </h1>
             <p className="mt-2 text-sm leading-6 text-muted-foreground">
               {queued === "pending"
-                ? "This device has no connectivity. The record is stored locally and will upload when you tap Sync now on the field list."
-                : result === "verified"
-                  ? "The digital certificate has been generated with a QR verification code and the instrument registry has been updated."
-                  : "The instrument registry has been updated with the outcome of this inspection."}
+                ? "This device has no connectivity. The record is stored locally and uploads when you tap Sync now on the field verification screen."
+                : issued
+                  ? "The certificate is live. Its QR code resolves to the public verification page and the instrument registry now shows the next verification due date."
+                  : verified
+                    ? "Review the final inspection report below and confirm the result to generate the digital certificate."
+                    : "The instrument registry has been updated with the outcome of this inspection."}
             </p>
+          </div>
 
-            {completed?.certificateNumber ? (
-              <div className="mt-5 rounded-xl border border-border bg-muted/40 p-4">
-                <p className="text-xs tracking-wide text-muted-foreground uppercase">
-                  Certificate number
+          {queued === "pending" ? null : (
+            <div className="rounded-2xl border border-border bg-card p-5">
+              <h2 className="font-display text-sm font-semibold text-foreground">
+                Final inspection report
+              </h2>
+              <dl className="mt-2">
+                <DataRow label="Application" value={application.applicationNumber} mono />
+                <DataRow label="Establishment" value={application.applicantName} />
+                <DataRow
+                  label="Instrument"
+                  value={`${instrument.instrumentType} · ${instrument.instrumentCode}`}
+                  mono
+                />
+                <DataRow label="Serial number" value={instrument.serialNumber} mono />
+                <DataRow
+                  label="Test loads"
+                  value={`${passedLoads} of ${measurements.length} within permissible error`}
+                />
+                {failing > 0 ? (
+                  <DataRow label="Failed loads" value={`${failing}`} />
+                ) : null}
+                <DataRow
+                  label="Location captured"
+                  value={gps ? `${gps.lat.toFixed(5)}, ${gps.lng.toFixed(5)}` : "Not captured"}
+                  mono
+                />
+                <DataRow label="Photographs" value={`${photos.length} attached`} />
+                <DataRow label="Signed by" value={signature ? signaturePayloadName : "Not signed"} />
+                <DataRow
+                  label="Recorded result"
+                  value={result ? result.replace(/_/g, " ").toUpperCase() : "—"}
+                />
+              </dl>
+              {remarks.trim() ? (
+                <p className="mt-3 rounded-lg border border-border bg-muted/40 p-3 text-sm text-muted-foreground">
+                  <span className="font-medium text-foreground">Officer remarks: </span>
+                  {remarks}
                 </p>
-                <p className="gov-id mt-1 text-lg font-semibold text-foreground">
-                  {completed.certificateNumber}
-                </p>
-              </div>
-            ) : null}
-
-            <div className="mt-6 flex flex-col gap-2">
-              {completed?.certificateId ? (
-                <Button
-                  className="gap-2"
-                  onClick={() => navigate(`/dashboard/certificates/${completed.certificateId}`)}
-                >
-                  <ShieldCheck className="size-4" aria-hidden="true" />
-                  View certificate
-                </Button>
               ) : null}
-              <Button variant="outline" onClick={() => navigate("/dashboard")}>
-                Back to dashboard
-              </Button>
+
+              {issued && verifyUrl ? (
+                <div className="mt-5 flex flex-col items-center gap-3 border-t border-border pt-5 sm:flex-row sm:items-start">
+                  <QrCodeBlock
+                    value={verifyUrl}
+                    size={116}
+                    label="Scan to verify this certificate"
+                  />
+                  <div className="min-w-0 flex-1 text-center sm:text-left">
+                    <p className="text-xs tracking-wide text-muted-foreground uppercase">
+                      Certificate number
+                    </p>
+                    <p className="gov-id mt-1 text-base font-semibold text-foreground">
+                      {certificateNumber}
+                    </p>
+                    <p className="mt-3 flex items-center justify-center gap-1.5 text-xs text-muted-foreground sm:justify-start">
+                      <ExternalLink className="size-3.5" aria-hidden="true" />
+                      <span className="truncate">{verifyUrl}</span>
+                    </p>
+                  </div>
+                </div>
+              ) : null}
             </div>
+          )}
+
+          <div className="flex flex-col gap-2">
+            {!issued && verified && queued !== "pending" ? (
+              <Button
+                size="lg"
+                className="gap-2"
+                onClick={() => setConfirmIssue(true)}
+                disabled={issuing}
+              >
+                <BadgeCheck className="size-4" aria-hidden="true" />
+                Approve and issue certificate
+              </Button>
+            ) : null}
+            {certificateId ? (
+              <Button
+                size="lg"
+                className="gap-2"
+                onClick={() => navigate(`/dashboard/certificates/${certificateId}`)}
+              >
+                <ShieldCheck className="size-4" aria-hidden="true" />
+                Open certificate, download or print PDF
+              </Button>
+            ) : null}
+            <Button variant="outline" onClick={() => navigate("/dashboard/field")}>
+              Back to my inspections
+            </Button>
+            <Button variant="ghost" onClick={() => navigate("/dashboard")}>
+              Dashboard
+            </Button>
           </div>
         </div>
+
+        <Dialog open={confirmIssue} onOpenChange={setConfirmIssue}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle>Confirm result and issue certificate</DialogTitle>
+              <DialogDescription>
+                {application.applicationNumber} · {instrument.instrumentCode}
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-3 text-sm">
+              <p className="text-muted-foreground">
+                You are confirming a <span className="font-semibold text-foreground">VERIFIED</span>{" "}
+                outcome for {instrument.instrumentType} held by {application.applicantName}. A
+                digital certificate with a unique QR verification code will be generated, and the
+                instrument registry will show the new verification due date.
+              </p>
+              <p className="rounded-lg border border-border bg-muted/40 p-3 text-xs leading-5 text-muted-foreground">
+                Issued certificates are publicly verifiable. A certificate can only be withdrawn
+                later by a department administrator.
+              </p>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  className="flex-1"
+                  onClick={() => setConfirmIssue(false)}
+                  disabled={issuing}
+                >
+                  Back to report
+                </Button>
+                <Button className="flex-1 gap-2" onClick={approveAndIssue} disabled={issuing}>
+                  {issuing ? (
+                    <Loader2 className="size-4 animate-spin" aria-hidden="true" />
+                  ) : (
+                    <BadgeCheck className="size-4" aria-hidden="true" />
+                  )}
+                  Confirm and issue
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     );
   }
