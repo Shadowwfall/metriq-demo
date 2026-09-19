@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="METRIQ">
+  <defs>
+    <linearGradient id="mq" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#274a7d"/>
+      <stop offset="1" stop-color="#16305a"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="15" fill="url(#mq)"/>
+  <g stroke="#ffffff" stroke-width="2.6" stroke-linecap="round" fill="none">
+    <path d="M32 15v9"/>
+    <path d="M19 24h26"/>
+  </g>
+  <g stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" fill="none">
+    <path d="M19 24l-5 10h10z"/>
+    <path d="M45 24l-5 10h10z"/>
+  </g>
+  <path d="M32 24v17" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
+  <path d="M23 46h18" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
+  <path d="M20 40a12 12 0 0 0 24 0" stroke="#e79a33" stroke-width="3.2" stroke-linecap="round" fill="none"/>
+  <circle cx="32" cy="40" r="2.6" fill="#e79a33"/>
+</svg>
