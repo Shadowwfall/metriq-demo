@@ -404,11 +404,26 @@ export default function FieldList() {
           title={
             tab === "today"
               ? t("empty.todayInspections")
-              : tab === "upcoming"
-                ? "No upcoming inspections"
-                : "No completed inspections yet"
+              : tab === "overdue"
+                ? "Nothing overdue"
+                : tab === "upcoming"
+                  ? "No upcoming inspections"
+                  : "No completed inspections yet"
           }
-          body={tab === "today" ? t("empty.todayInspectionsBody") : undefined}
+          body={
+            tab === "today"
+              ? t("empty.todayInspectionsBody")
+              : filtersActive
+                ? "Nothing matches the current filters. Clear them to see the full list."
+                : undefined
+          }
+          action={
+            filtersActive ? (
+              <Button variant="outline" size="sm" onClick={clearFilters}>
+                Clear filters
+              </Button>
+            ) : undefined
+          }
         />
       ) : (
         <ul className="space-y-3">
@@ -421,6 +436,24 @@ export default function FieldList() {
                 <div className="flex flex-wrap items-center gap-2.5">
                   <GovId className="font-semibold">{row.instrument.instrumentCode}</GovId>
                   <StatusBadge status={row.inspection.status} />
+                  {row.overdue ? (
+                    <span className="inline-flex items-center gap-1 rounded-full border border-destructive/40 px-2 py-0.5 text-[11px] font-medium text-destructive">
+                      <Timer className="size-3" aria-hidden="true" />
+                      Overdue
+                    </span>
+                  ) : null}
+                  {row.awaitingCertificate ? (
+                    <span className="inline-flex items-center gap-1 rounded-full border border-[color-mix(in_oklab,var(--verify)_38%,transparent)] px-2 py-0.5 text-[11px] font-medium text-[color-mix(in_oklab,var(--verify)_70%,black)]">
+                      <BadgeCheck className="size-3" aria-hidden="true" />
+                      Certificate to issue
+                    </span>
+                  ) : null}
+                  {row.application.priority !== "normal" ? (
+                    <span className="inline-flex items-center gap-1 rounded-full border border-[color-mix(in_oklab,var(--caution)_40%,transparent)] px-2 py-0.5 text-[11px] font-medium text-[color-mix(in_oklab,var(--caution)_65%,black)]">
+                      <Timer className="size-3" aria-hidden="true" />
+                      {row.application.priority} priority
+                    </span>
+                  ) : null}
                 </div>
                 <p className="mt-1.5 text-sm font-medium text-foreground">
                   {row.application.applicantName} · {row.instrument.instrumentType}
@@ -453,6 +486,14 @@ export default function FieldList() {
                     {row.inspection.status === "in_progress"
                       ? t("action.continue")
                       : t("action.startVerification")}
+                  </Button>
+                ) : row.awaitingCertificate ? (
+                  <Button
+                    className="gap-2"
+                    onClick={() => navigate(`/dashboard/field/${row.application._id}`)}
+                  >
+                    <BadgeCheck className="size-4" aria-hidden="true" />
+                    Issue certificate
                   </Button>
                 ) : null}
               </div>

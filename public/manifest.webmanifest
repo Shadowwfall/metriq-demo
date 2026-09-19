@@ -1,7 +1,7 @@
 {
-  "name": "METRIQ — Legal Metrology Verification Portal",
-  "short_name": "METRIQ",
-  "description": "Digital verification and certification of weighing and measuring instruments (prototype).",
+  "name": "MetriQ — Online Verification System",
+  "short_name": "MetriQ",
+  "description": "Online verification and certification of weighing and measuring instruments (prototype).",
   "start_url": "/dashboard",
   "display": "standalone",
   "background_color": "#f5f7fa",

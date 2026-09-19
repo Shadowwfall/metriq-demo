@@ -14,7 +14,7 @@ const ROLE_LABEL: Record<string, string> = {
   dept_admin: "Department Admin",
   ministry: "Ministry",
   admin: "Administrator",
-  system: "METRIQ System",
+  system: "MetriQ System",
   gatc: "GATC",
   user: "Portal user",
 };

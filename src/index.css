@@ -41,7 +41,7 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
-  /* METRIQ semantic accents (govtech: navy trust + saffron + india green) */
+  /* MetriQ semantic accents (govtech: navy trust + saffron + india green) */
   --color-saffron: var(--saffron);
   --color-saffron-foreground: var(--saffron-foreground);
   --color-verify: var(--verify);

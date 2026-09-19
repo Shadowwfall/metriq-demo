@@ -832,7 +832,7 @@ export const seedStep = mutation({
       const sample = apps.slice(0, 40);
       const devices = [
         "Chrome 140 · Windows 11",
-        "METRIQ Android PWA · Android 14",
+        "MetriQ Android PWA · Android 14",
         "Safari 18 · iPadOS 18",
         "Chrome 141 · Android 15",
       ];
@@ -849,7 +849,7 @@ export const seedStep = mutation({
           rows.push(
             { at: base + 4 * DAY, name: officer.name, role: "lmo", action: "inspection.started", entity: "application", detail: "Field verification started at instrument location" },
             { at: base + 4 * DAY + 5400_000, name: officer.name, role: "lmo", action: "verification.result_submitted", entity: "application", detail: "Result VERIFIED — all test loads within permissible error" },
-            { at: base + 4 * DAY + 5460_000, name: "METRIQ System", role: "system", action: "certificate.issued", entity: "application", detail: "Digital verification certificate generated" },
+            { at: base + 4 * DAY + 5460_000, name: "MetriQ System", role: "system", action: "certificate.issued", entity: "application", detail: "Digital verification certificate generated" },
           );
         }
         for (const r of rows) {

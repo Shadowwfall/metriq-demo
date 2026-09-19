@@ -178,10 +178,10 @@ export default function Verify() {
         <div className="mx-auto flex h-16 max-w-5xl items-center gap-3 px-4 sm:px-6">
           <BrandMark compact />
           <span className="font-display text-sm font-extrabold tracking-[0.16em] text-foreground">
-            METRIQ
+            MetriQ
           </span>
-          <span className="rounded-full border border-border px-2.5 py-1 text-[11px] font-medium text-muted-foreground">
-            {t("verify.title")}
+          <span className="hidden rounded-full border border-border px-2.5 py-1 text-[11px] font-medium text-muted-foreground md:inline">
+            Online Verification System · Weighing & Measuring Instruments
           </span>
           <div className="ml-auto flex items-center gap-2">
             <LanguageToggle />
@@ -210,7 +210,7 @@ export default function Verify() {
             e.preventDefault();
             runCheck(term);
           }}
-          className="flex flex-col gap-2 rounded-xl border border-border bg-card p-2 shadow-sm sm:flex-row"
+          className="flex flex-col gap-2 rounded-xl border border-border bg-card p-2 sm:flex-row"
         >
           <div className="relative flex-1">
             <Search

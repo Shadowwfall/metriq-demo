@@ -429,8 +429,8 @@ export const claimDemoRole = mutation({
         },
         {
           type: "system",
-          title: "Welcome to METRIQ",
-          titleHi: "METRIQ में आपका स्वागत है",
+          title: "Welcome to MetriQ",
+          titleHi: "MetriQ में आपका स्वागत है",
           body: "This is a prototype demonstration environment. Records shown are fictional demo data.",
           bodyHi: "यह एक प्रोटोटाइप प्रदर्शन वातावरण है। दिखाए गए रिकॉर्ड काल्पनिक डेमो डेटा हैं।",
         },
@@ -482,8 +482,8 @@ export const claimDemoRole = mutation({
           type: "system",
           title: "Prototype environment",
           titleHi: "प्रोटोटाइप वातावरण",
-          body: "METRIQ is a demonstration prototype. It is not an official Government of India service.",
-          bodyHi: "METRIQ एक प्रदर्शन प्रोटोटाइप है। यह भारत सरकार की आधिकारिक सेवा नहीं है।",
+          body: "MetriQ is a demonstration prototype. It is not an official Government of India service.",
+          bodyHi: "MetriQ एक प्रदर्शन प्रोटोटाइप है। यह भारत सरकार की आधिकारिक सेवा नहीं है।",
         },
       ]);
     }
@@ -497,7 +497,7 @@ export const claimDemoRole = mutation({
       entityId: String(userId),
       recordLabel: profile.code,
       detail: `Demo workspace initialised for ${role} role`,
-      device: "METRIQ Web",
+      device: "MetriQ Web",
     });
 
     return result;

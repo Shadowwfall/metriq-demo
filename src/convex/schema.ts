@@ -141,7 +141,7 @@ const schema = defineSchema(
 
       role: v.optional(roleValidator), // role of the user. do not remove
 
-      // METRIQ profile fields
+      // MetriQ profile fields
       phone: v.optional(v.string()),
       designation: v.optional(v.string()),
       employeeCode: v.optional(v.string()),

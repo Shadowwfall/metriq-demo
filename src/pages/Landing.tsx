@@ -30,32 +30,32 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 
 const HOW_IT_WORKS = [
-  { title: "Register Instrument", body: "Log the instrument with manufacturer, model, serial number and capacity.", icon: FilePlus2 },
-  { title: "Apply for Verification", body: "Submit a new or re-verification application with supporting documents.", icon: ClipboardCheck },
-  { title: "Schedule Inspection", body: "The department reviews documents and assigns an officer and slot.", icon: MapPin },
-  { title: "Digital Verification", body: "The officer records GPS, photographs, test loads and observations on site.", icon: ScanLine },
-  { title: "Receive Certificate", body: "A signed digital certificate with a QR code is issued automatically.", icon: BadgeCheck },
-  { title: "Verify Anytime", body: "Anyone can confirm authenticity from the QR code or certificate ID.", icon: QrCode },
+  { title: "Register your instruments", body: "Add each weighing or measuring instrument with its manufacturer, model, serial number and capacity.", icon: FilePlus2 },
+  { title: "Apply for verification", body: "Submit a new or re-verification application and attach the supporting documents.", icon: ClipboardCheck },
+  { title: "Inspection scheduled for you", body: "The department reviews your documents, assigns a Legal Metrology Officer and books an appointment.", icon: MapPin },
+  { title: "On-site verification", body: "The officer records GPS location, photographs, test loads and observations at your premises.", icon: ScanLine },
+  { title: "Receive your certificate", body: "Once the result is approved, a digital certificate with a scannable QR code is issued to your account.", icon: BadgeCheck },
+  { title: "Prove it anytime", body: "Customers and inspectors confirm the certificate in seconds by scanning the QR or entering its ID.", icon: QrCode },
 ];
 
 const FEATURES = [
-  { title: "Online Verification", body: "End-to-end digital workflow from application to result.", icon: ClipboardCheck },
-  { title: "Digital Certificates", body: "Tamper-evident certificates with a unique verification reference.", icon: BadgeCheck },
-  { title: "QR Authentication", body: "Scan-to-verify pages for field and consumer checks.", icon: QrCode },
-  { title: "Field Verification", body: "Mobile-first workflow designed for poor connectivity.", icon: ScanLine },
-  { title: "Expiry Alerts", body: "Automated reminders ahead of stamping validity lapses.", icon: BellRing },
-  { title: "Centralised Records", body: "One registry for instruments, applications and certificates.", icon: Database },
-  { title: "Analytics", body: "District, state and category level monitoring.", icon: LineChart },
-  { title: "Secure Access", body: "Role-based permissions and immutable activity records.", icon: Lock },
+  { title: "Fully online verification", body: "One workflow from application to approved result — no paper forms, no office visits.", icon: ClipboardCheck },
+  { title: "Digital certificates", body: "Each certificate carries a unique number and verification reference.", icon: BadgeCheck },
+  { title: "QR authentication", body: "Any customer or inspector can scan the QR code and confirm validity instantly.", icon: QrCode },
+  { title: "Works in the field", body: "Officers verify on mobile, even where connectivity is poor — records sync later.", icon: ScanLine },
+  { title: "Expiry reminders", body: "Notifications arrive ahead of stamping validity lapses, so you never fall out of compliance.", icon: BellRing },
+  { title: "One central registry", body: "All of your instruments, applications and certificates live in a single searchable record.", icon: Database },
+  { title: "Compliance analytics", body: "District, state and category level monitoring for departments.", icon: LineChart },
+  { title: "Secure access", body: "Role-based permissions and an append-only activity record on every action.", icon: Lock },
 ];
 
 const STAKEHOLDERS = [
-  { title: "Businesses", body: "Register instruments and track compliance.", icon: Store },
-  { title: "Legal Metrology Officers", body: "Plan and complete field verification.", icon: ShieldCheck },
-  { title: "GATCs", body: "Record test parameters and outcomes.", icon: Gauge },
-  { title: "State Departments", body: "Assign work and monitor pendency.", icon: Landmark },
-  { title: "Ministry", body: "National oversight and reporting.", icon: Users },
-  { title: "Consumers", body: "Verify a certificate instantly, without login.", icon: Building2 },
+  { title: "Businesses and instrument owners", body: "Register instruments, track every application and keep all certificates in one place.", icon: Store },
+  { title: "Legal Metrology Officers", body: "A clear daily schedule and a mobile workflow for on-site verification.", icon: ShieldCheck },
+  { title: "Government Approved Test Centres", body: "Receive referrals and record test parameters and outcomes.", icon: Gauge },
+  { title: "State departments", body: "Review applications, assign officers and monitor pendency across districts.", icon: Landmark },
+  { title: "Ministry", body: "National oversight of verification volumes and compliance trends.", icon: Users },
+  { title: "Customers and the public", body: "Verify any certificate instantly — no account required.", icon: Building2 },
 ];
 
 function VerifyBox({ compact = false }: { compact?: boolean }) {
@@ -72,7 +72,7 @@ function VerifyBox({ compact = false }: { compact?: boolean }) {
       }}
       className={cn("w-full", compact ? "max-w-xl" : "max-w-2xl")}
     >
-      <div className="flex flex-col gap-2 rounded-xl border border-border bg-card p-2 shadow-sm sm:flex-row">
+      <div className="flex flex-col gap-2 rounded-xl border border-border bg-card p-2 sm:flex-row">
         <div className="relative flex-1">
           <QrCode
             className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
@@ -148,7 +148,7 @@ export default function Landing() {
       </header>
 
       {/* Hero */}
-      <section className="relative overflow-hidden border-b border-border bg-[linear-gradient(180deg,color-mix(in_oklab,var(--primary)_7%,transparent),transparent_60%)]">
+      <section className="relative overflow-hidden border-b border-border bg-muted/30">
         <div className="grid-backdrop absolute inset-0 opacity-40" aria-hidden="true" />
         <div className="relative mx-auto max-w-7xl px-4 pt-14 pb-16 sm:px-6 lg:px-8 lg:pt-20 lg:pb-24">
           <div className="grid items-start gap-12 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
@@ -199,7 +199,7 @@ export default function Landing() {
             </div>
 
             {/* Verify card */}
-            <div className="rounded-2xl border border-border bg-card p-5 shadow-lg shadow-primary/5 sm:p-7">
+            <div className="rounded-2xl border border-border bg-card p-5 sm:p-7">
               <div className="flex items-center gap-3">
                 <span className="flex size-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
                   <ShieldCheck className="size-5" aria-hidden="true" />
@@ -270,8 +270,8 @@ export default function Landing() {
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <SectionIntro
           eyebrow="How it works"
-          title="Six steps from registration to verification"
-          body="The platform replaces manual application and record-management workflows with a single digital trail."
+          title="From registration to a verifiable certificate, in six steps"
+          body="MetriQ replaces manual paperwork with a single digital trail — you always know which stage your application is at."
         />
         <ol className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {HOW_IT_WORKS.map((step, index) => (
@@ -299,11 +299,11 @@ export default function Landing() {
       {/* Features */}
       <section className="border-y border-border bg-muted/40">
         <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-          <SectionIntro
-            eyebrow="Platform features"
-            title="Built like digital public infrastructure"
-            body="Every capability is designed for verification integrity, transparency and auditability."
-          />
+        <SectionIntro
+          eyebrow="Platform features"
+          title="Built like digital public infrastructure"
+          body="Every capability is designed for verification integrity, transparency and auditability — for your records and for the public's trust."
+        />
           <div className="mt-10 grid gap-px overflow-hidden rounded-xl border border-border bg-border sm:grid-cols-2 lg:grid-cols-4">
             {FEATURES.map((feature) => (
               <div key={feature.title} className="bg-card p-5">
@@ -354,11 +354,12 @@ export default function Landing() {
             <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
               <div className="max-w-2xl">
                 <h2 className="font-display text-xl font-bold text-foreground">
-                  Explore the complete verification journey
+                  See the complete journey for yourself
                 </h2>
                 <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                  Sign in with a demo role to follow an application from instrument
-                  registration through field verification to public certificate checks.
+                  Sign in with a demo role and follow an application from instrument
+                  registration through on-site verification to a publicly verifiable
+                  certificate.
                 </p>
               </div>
               <Button asChild size="lg" className="gap-2 self-start">
@@ -374,7 +375,7 @@ export default function Landing() {
                 {lang === "hi" ? t("notice.prototype") : t("notice.prototype")}
               </p>
               <p className="mt-1 text-sm leading-6 text-muted-foreground">
-                METRIQ is a hackathon prototype inspired by the conceptual requirements of
+                MetriQ is a hackathon prototype inspired by the conceptual requirements of
                 the Legal Metrology Act, 2009 and the Legal Metrology (General) Rules,
                 2011. It is not an official Government of India service, contains no real
                 personal data, and all integrations (DigiLocker, SMS, payments) are

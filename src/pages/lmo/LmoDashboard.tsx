@@ -84,7 +84,7 @@ export default function LmoDashboard() {
       breadcrumb={[{ label: t("nav.dashboard") }]}
     >
       {/* Greeting */}
-      <section className="mb-6 overflow-hidden rounded-2xl border border-border bg-[linear-gradient(120deg,color-mix(in_oklab,var(--primary)_96%,black),color-mix(in_oklab,var(--primary)_76%,black))] p-5 text-primary-foreground sm:p-6">
+      <section className="mb-6 rounded-2xl border border-primary/25 bg-primary p-5 text-primary-foreground sm:p-6">
         <div className="flex flex-wrap items-start justify-between gap-5">
           <div className="flex items-start gap-4">
             <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-white/10 font-display text-base font-bold">

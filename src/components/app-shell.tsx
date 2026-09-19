@@ -55,7 +55,7 @@ export function BrandMark({
     <Link
       to="/dashboard"
       className="flex items-center gap-2.5 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2"
-      aria-label="METRIQ home"
+      aria-label="MetriQ home"
     >
       <span
         className={cn(
@@ -73,7 +73,7 @@ export function BrandMark({
               inverted ? "text-white" : "text-foreground",
             )}
           >
-            METRIQ
+            MetriQ
           </span>
           <span
             className={cn(
@@ -81,7 +81,7 @@ export function BrandMark({
               inverted ? "text-white/60" : "text-muted-foreground",
             )}
           >
-            Legal Metrology · Prototype
+            Online Verification System · Prototype
           </span>
         </span>
       ) : null}

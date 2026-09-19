@@ -43,8 +43,8 @@ const DEMO_ROLES: {
     role: "business",
     name: "Business Demo",
     email: "business@demo.gov.in",
-    title: "Business / Instrument Owner",
-    body: "Register instruments, submit applications, download certificates.",
+    title: "Business / instrument owner",
+    body: "Register instruments, submit applications and download certificates.",
     icon: Store,
   },
   {
@@ -52,7 +52,7 @@ const DEMO_ROLES: {
     name: "LMO Demo",
     email: "lmo@demo.gov.in",
     title: "Legal Metrology Officer",
-    body: "Field calendar, mobile verification workflow, measurements and results.",
+    body: "Today's schedule, mobile field verification, measurements and results.",
     icon: ShieldCheck,
   },
   {
@@ -60,7 +60,7 @@ const DEMO_ROLES: {
     name: "GATC Demo",
     email: "gatc@demo.gov.in",
     title: "Government Approved Test Centre",
-    body: "Referral requests and test outcomes.",
+    body: "Referral requests and recorded test outcomes.",
     icon: Gauge,
   },
   {
@@ -68,7 +68,7 @@ const DEMO_ROLES: {
     name: "Department Admin",
     email: "admin@demo.gov.in",
     title: "Department Administrator",
-    body: "Review applications, assign officers, schedule inspections.",
+    body: "Review applications, assign officers and schedule inspections.",
     icon: Landmark,
   },
   {
@@ -115,7 +115,7 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
           utcOffsetMinutes: -new Date().getTimezoneOffset(),
         });
       } catch (claimError) {
-        console.warn("[METRIQ] demo workspace claim failed", claimError);
+        console.warn("[MetriQ] demo workspace claim failed", claimError);
       }
       if (!cancelled) {
         setPendingRole(null);
@@ -193,12 +193,13 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
               Prototype access
             </p>
             <h1 className="mt-3 font-display text-3xl leading-tight font-extrabold text-foreground">
-              Digital Verification for a Trusted Measurement Ecosystem
+              MetriQ — Online Verification System for Weighing and Measuring Instruments
             </h1>
             <p className="mt-4 max-w-md text-sm leading-6 text-muted-foreground">
-              Choose a demo role to open a pre-populated workspace, or sign in with your
-              email address. Demo sessions are separated per role and use fictional
-              records only.
+              One account for everything: register your instruments, apply for verification
+              and download the certificates your customers can check with a single scan.
+              Choose a demo role to explore a pre-populated workspace, or sign in with
+              your email address. Demo sessions use fictional records only.
             </p>
             <ul className="mt-8 space-y-3">
               {[
@@ -230,7 +231,7 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
           </div>
 
           {mode === "roles" ? (
-            <Card className="border-border shadow-sm">
+            <Card className="border-border">
               <CardHeader>
                 <CardTitle className="font-display text-xl">Login to Portal</CardTitle>
                 <CardDescription>
@@ -305,7 +306,7 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
               </CardContent>
             </Card>
           ) : (
-            <Card className="border-border shadow-sm">
+            <Card className="border-border">
               {step === "signIn" ? (
                 <>
                   <CardHeader>

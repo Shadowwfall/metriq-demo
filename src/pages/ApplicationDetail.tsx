@@ -452,6 +452,53 @@ export default function ApplicationDetail() {
             )}
           </section>
 
+          {data.certificateHistory.length ? (
+            <section className="rounded-xl border border-border bg-card p-5">
+              <SectionHeader
+                title="Previous certificates and verification history"
+                description="Earlier verification cycles recorded against this instrument."
+                icon={History}
+              />
+              <div className="overflow-x-auto">
+                <table className="w-full min-w-[38rem] text-sm">
+                  <thead className="bg-muted/60 text-xs tracking-wide text-muted-foreground uppercase">
+                    <tr>
+                      <th className="px-3 py-2 text-left font-medium">Certificate</th>
+                      <th className="px-3 py-2 text-left font-medium">Verified on</th>
+                      <th className="px-3 py-2 text-left font-medium">Valid until</th>
+                      <th className="px-3 py-2 text-left font-medium">Officer</th>
+                      <th className="px-3 py-2 text-left font-medium">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-border">
+                    {data.certificateHistory.map((cert) => (
+                      <tr key={cert._id}>
+                        <td className="px-3 py-2">
+                          {role === "business" || cert.status === "valid" ? (
+                            <Link
+                              to={`/dashboard/certificates/${cert._id}`}
+                              className="gov-id font-medium text-primary hover:underline"
+                            >
+                              {cert.certificateNumber}
+                            </Link>
+                          ) : (
+                            <span className="gov-id">{cert.certificateNumber}</span>
+                          )}
+                        </td>
+                        <td className="px-3 py-2">{formatDate(cert.verificationDate)}</td>
+                        <td className="px-3 py-2">{formatDate(cert.validUntil)}</td>
+                        <td className="px-3 py-2">{cert.officerName}</td>
+                        <td className="px-3 py-2">
+                          <StatusBadge status={cert.status} />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </section>
+          ) : null}
+
           {data.inspection ? (
             <section className="rounded-xl border border-border bg-card p-5">
               <SectionHeader title="Inspection record" icon={ScanLine} />

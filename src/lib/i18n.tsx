@@ -16,8 +16,9 @@ export type Lang = "en" | "hi";
  * languages can be added by appending another dictionary.
  */
 const en = {
-  "app.name": "METRIQ",
-  "app.tagline": "Digital Verification. Trusted Measurement.",
+  "app.name": "MetriQ",
+  "app.tagline": "Online Verification System for Weighing and Measuring Instruments",
+  "app.descriptor": "Online Verification System for Weighing and Measuring Instruments",
 
   "nav.today": "Today",
   "nav.assignments": "Assignments",
@@ -38,6 +39,8 @@ const en = {
   "action.signOut": "Sign out",
   "action.signIn": "Login to Portal",
   "action.startVerification": "Start Verification",
+  "action.approveIssue": "Approve & issue certificate",
+  "action.overdue": "Overdue",
   "action.viewDetails": "View Details",
   "action.continue": "Continue Verification",
   "action.viewRoute": "View Route",
@@ -61,6 +64,8 @@ const en = {
   "metric.pendingVerification": "Pending Verification",
   "metric.completedToday": "Completed Today",
   "metric.expiringSoon": "Expiring Soon",
+  "metric.overdue": "Overdue",
+  "metric.awaitingCertificate": "Awaiting certificate",
   "metric.registeredInstruments": "Registered Instruments",
   "metric.activeCertificates": "Active Certificates",
   "metric.pendingApplications": "Pending Applications",
@@ -141,9 +146,11 @@ const en = {
   "verify.label.officer": "Verifying Officer",
 
   "notice.prototype": "Prototype demonstration environment — all records are fictional.",
-  "empty.todayInspections": "No upcoming inspections",
+  "empty.todayInspections": "No inspections today",
   "empty.todayInspectionsBody":
-    "You have no inspections scheduled for today. New assignments appear here automatically.",
+    "Nothing is scheduled for today. New assignments from the department appear here as soon as they are made.",
+  "empty.overdue": "Nothing overdue",
+  "empty.overdueBody": "Every inspection assigned to you is within its appointment window.",
 
   "label.jurisdiction": "Jurisdiction",
   "label.language": "Language",
@@ -159,7 +166,9 @@ const en = {
 export type Key = keyof typeof en;
 
 const hi: Partial<Record<Key, string>> = {
-  "app.tagline": "डिजिटल सत्यापन। विश्वसनीय मापन।",
+  "app.name": "MetriQ",
+  "app.tagline": "तुला एवं मापी यंत्रों की ऑनलाइन सत्यापन प्रणाली",
+  "app.descriptor": "तुला एवं मापी यंत्रों की ऑनलाइन सत्यापन प्रणाली",
 
   "nav.today": "आज",
   "nav.assignments": "कार्यसूची",
@@ -180,6 +189,8 @@ const hi: Partial<Record<Key, string>> = {
   "action.signOut": "साइन आउट",
   "action.signIn": "पोर्टल में लॉगिन",
   "action.startVerification": "सत्यापन शुरू करें",
+  "action.approveIssue": "अनुमोदित करें और प्रमाणपत्र जारी करें",
+  "action.overdue": "विलंबित",
   "action.viewDetails": "विवरण देखें",
   "action.continue": "सत्यापन जारी रखें",
   "action.viewRoute": "मार्ग देखें",
@@ -203,6 +214,8 @@ const hi: Partial<Record<Key, string>> = {
   "metric.pendingVerification": "लंबित सत्यापन",
   "metric.completedToday": "आज पूर्ण",
   "metric.expiringSoon": "जल्द समाप्त होने वाले",
+  "metric.overdue": "विलंबित",
+  "metric.awaitingCertificate": "प्रमाणपत्र प्रतीक्षित",
   "metric.registeredInstruments": "पंजीकृत यंत्र",
   "metric.activeCertificates": "सक्रिय प्रमाणपत्र",
   "metric.pendingApplications": "लंबित आवेदन",
@@ -272,9 +285,11 @@ const hi: Partial<Record<Key, string>> = {
     "प्रोटोटाइप प्रदर्शन। यह भारत सरकार की आधिकारिक सत्यापन सेवा नहीं है।",
 
   "notice.prototype": "प्रोटोटाइप प्रदर्शन वातावरण — सभी रिकॉर्ड काल्पनिक हैं।",
-  "empty.todayInspections": "कोई आगामी निरीक्षण नहीं",
+  "empty.todayInspections": "आज कोई निरीक्षण नहीं",
   "empty.todayInspectionsBody":
-    "आज के लिए कोई निरीक्षण निर्धारित नहीं है। नए कार्य यहाँ स्वतः दिखाई देंगे।",
+    "आज के लिए कुछ भी निर्धारित नहीं है। विभाग द्वारा नई नियुक्तियाँ यहाँ तुरंत दिखाई देंगी।",
+  "empty.overdue": "कुछ भी विलंबित नहीं",
+  "empty.overdueBody": "आपको सौंपा गया प्रत्येक निरीक्षण अपनी समय-सीमा के भीतर है।",
 
   "label.jurisdiction": "क्षेत्राधिकार",
   "label.language": "भाषा",

@@ -93,7 +93,7 @@ export default function AdminDashboard() {
         </div>
       }
     >
-      <section className="mb-6 overflow-hidden rounded-2xl border border-border bg-[linear-gradient(120deg,color-mix(in_oklab,var(--primary)_96%,black),color-mix(in_oklab,var(--primary)_78%,black))] p-5 text-primary-foreground sm:p-6">
+      <section className="mb-6 rounded-2xl border border-primary/25 bg-primary p-5 text-primary-foreground sm:p-6">
         <p className="text-xs tracking-[0.14em] text-primary-foreground/60 uppercase">
           Legal Metrology Department
         </p>

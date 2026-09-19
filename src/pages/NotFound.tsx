@@ -25,7 +25,7 @@ export default function NotFound() {
             This record could not be found
           </h1>
           <p className="mt-3 text-sm leading-6 text-muted-foreground">
-            The page or reference you opened does not exist in the METRIQ portal. If you
+            The page or reference you opened does not exist in the MetriQ portal. If you
             arrived here from a QR code, verify the certificate ID on the public
             verification page instead.
           </p>
@@ -52,7 +52,7 @@ export default function NotFound() {
 
       <footer className="relative border-t border-border py-6">
         <p className="mx-auto max-w-5xl px-4 text-xs text-muted-foreground sm:px-6">
-          METRIQ prototype · not an official Government of India service.
+          MetriQ prototype · not an official Government of India service.
         </p>
       </footer>
     </div>

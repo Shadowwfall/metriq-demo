@@ -82,7 +82,7 @@ export function CertificateSheet({
   return (
     <article
       className={cn(
-        "print-sheet mx-auto w-full max-w-3xl rounded-xl border border-border bg-white p-6 text-[#1c2838] shadow-sm sm:p-9",
+        "print-sheet mx-auto w-full max-w-3xl rounded-xl border border-border bg-white p-6 text-[#1c2838] sm:p-9",
         className,
       )}
       aria-label={`Digital verification certificate ${data.certificateNumber}`}
@@ -95,10 +95,10 @@ export function CertificateSheet({
           </span>
           <div className="text-left">
             <p className="font-display text-[13px] leading-4 font-extrabold tracking-[0.14em] text-[#1d3b68]">
-              METRIQ
+              MetriQ
             </p>
             <p className="text-[10px] leading-3 text-[#6e7887]">
-              Digital Verification. Trusted Measurement.
+              Online Verification System for Weighing and Measuring Instruments
             </p>
           </div>
         </div>

@@ -26,7 +26,7 @@ export function useAppSeed() {
         }
       } catch (error) {
         // A failed step stays pending; the next mount retries it.
-        console.warn("[METRIQ] demo seed step failed", error);
+        console.warn("[MetriQ] demo seed step failed", error);
       } finally {
         running.current = false;
       }

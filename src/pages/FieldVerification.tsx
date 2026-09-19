@@ -353,7 +353,7 @@ export default function FieldVerification() {
       try {
         await saveDraft({ id: inspection._id, ...patch });
       } catch (error) {
-        console.warn("[METRIQ] draft autosave failed", error);
+        console.warn("[MetriQ] draft autosave failed", error);
       } finally {
         setSaving(false);
       }
