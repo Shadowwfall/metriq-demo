@@ -1,7 +1,10 @@
+import { useState } from "react";
+
 import { AppShell } from "@/components/app-shell";
 import { StatusBadge } from "@/components/status-badge";
 import { EmptyState, SectionHeader, StatCard } from "@/components/ui-bits";
 import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { api } from "@/convex/_generated/api";
 import { daysUntil, formatDate } from "@/lib/format";
@@ -19,6 +22,15 @@ import {
   Users,
 } from "lucide-react";
 import { toast } from "sonner";
+
+const REPORTS = [
+  { value: "verification", label: "Verification" },
+  { value: "pending", label: "Pending applications" },
+  { value: "expiry", label: "Expiring certificates" },
+  { value: "workload", label: "Officer workload" },
+  { value: "categories", label: "Instrument categories" },
+  { value: "state", label: "State-wise" },
+] as const;
 
 function exportCsv(name: string, rows: Record<string, unknown>[]) {
   if (!rows.length) {
@@ -49,6 +61,7 @@ function exportCsv(name: string, rows: Record<string, unknown>[]) {
 }
 
 export default function Reports() {
+  const [report, setReport] = useState<string>("verification");
   const { t } = useI18n();
   const profile = useQuery(api.profiles.current);
   const overview = useQuery(api.dashboard.adminOverview, {});
@@ -103,14 +116,32 @@ export default function Reports() {
         />
       </section>
 
-      <Tabs defaultValue="verification">
-        <TabsList className="flex-wrap">
-          <TabsTrigger value="verification">Verification</TabsTrigger>
-          <TabsTrigger value="pending">Pending applications</TabsTrigger>
-          <TabsTrigger value="expiry">Expiring certificates</TabsTrigger>
-          <TabsTrigger value="workload">Officer workload</TabsTrigger>
-          <TabsTrigger value="categories">Instrument categories</TabsTrigger>
-          <TabsTrigger value="state">State-wise</TabsTrigger>
+      <Tabs value={report} onValueChange={setReport}>
+        {/* Narrow viewports: dropdown filter. The tab row wraps onto a second
+            line below xl and overlaps the report heading, so it is replaced
+            with a select. */}
+        <div className="xl:hidden">
+          <Select value={report} onValueChange={setReport}>
+            <SelectTrigger aria-label="Filter reports" className="w-full sm:w-72">
+              <SelectValue placeholder="Select a report" />
+            </SelectTrigger>
+            <SelectContent>
+              {REPORTS.map((r) => (
+                <SelectItem key={r.value} value={r.value}>
+                  {r.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Wide viewports: tab bar, unchanged */}
+        <TabsList className="hidden flex-wrap xl:flex">
+          {REPORTS.map((r) => (
+            <TabsTrigger key={r.value} value={r.value}>
+              {r.label}
+            </TabsTrigger>
+          ))}
         </TabsList>
 
         {/* Verification summary */}
