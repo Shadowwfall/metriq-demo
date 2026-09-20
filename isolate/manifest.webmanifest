@@ -1,0 +1,17 @@
+{
+  "name": "MetriQ — Online Verification System",
+  "short_name": "MetriQ",
+  "description": "Online verification and certification of weighing and measuring instruments (prototype).",
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "background_color": "#f5f7fa",
+  "theme_color": "#1d3b68",
+  "icons": [
+    {
+      "src": "/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
