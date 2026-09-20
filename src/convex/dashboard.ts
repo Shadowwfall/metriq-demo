@@ -57,6 +57,7 @@ export const lmoOverview = query({
     ).length;
 
     const stillOpen = (status: string) => status !== "completed" && status !== "synced";
+    const now = Date.now();
     const overdue = mine.filter((i) => i.scheduledAt < now && stillOpen(i.status)).length;
     const awaitingCertificate = mine.filter(
       (i) => i.status === "completed" && i.result === "verified" && !i.certificateId,
@@ -72,7 +73,6 @@ export const lmoOverview = query({
       OPEN_STATUSES.includes(a.status),
     ).length;
 
-    const now = Date.now();
     const scopedCertificates = state ? certificates.filter((c) => c.state === state) : certificates;
     const expiringSoon = scopedCertificates.filter(
       (c) => c.status !== "revoked" && c.validUntil >= now && c.validUntil < now + 30 * DAY_MS,
