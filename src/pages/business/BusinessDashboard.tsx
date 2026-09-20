@@ -92,8 +92,8 @@ export default function BusinessDashboard() {
         </div>
       </section>
 
-      <div className="grid gap-6 lg:grid-cols-2">
-        <section aria-labelledby="my-instruments">
+      <div className="grid min-w-0 gap-6 lg:grid-cols-2">
+        <section aria-labelledby="my-instruments" className="min-w-0">
           <SectionHeader
             id="my-instruments"
             title={t("section.myInstruments")}
@@ -120,7 +120,7 @@ export default function BusinessDashboard() {
                     <span className="block truncate text-sm font-medium text-foreground">
                       {instrument.instrumentType}
                     </span>
-                    <span className="mt-0.5 block gov-id text-xs text-muted-foreground">
+                    <span className="mt-0.5 block truncate gov-id text-xs text-muted-foreground">
                       {instrument.instrumentCode}
                     </span>
                   </span>
@@ -142,7 +142,7 @@ export default function BusinessDashboard() {
           </div>
         </section>
 
-        <section aria-labelledby="recent-apps">
+        <section aria-labelledby="recent-apps" className="min-w-0">
           <SectionHeader
             id="recent-apps"
             title={t("section.recentApplications")}
@@ -166,7 +166,7 @@ export default function BusinessDashboard() {
                   className="flex w-full items-center justify-between gap-4 px-4 py-3 text-left transition-colors hover:bg-accent"
                 >
                   <span className="min-w-0">
-                    <span className="block gov-id text-sm font-medium text-foreground">
+                    <span className="block truncate gov-id text-sm font-medium text-foreground">
                       {application.applicationNumber}
                     </span>
                     <span className="mt-0.5 block truncate text-xs text-muted-foreground">
@@ -186,7 +186,7 @@ export default function BusinessDashboard() {
           </div>
         </section>
 
-        <section aria-labelledby="expiring">
+        <section aria-labelledby="expiring" className="min-w-0">
           <SectionHeader id="expiring" title={t("section.upcomingExpirations")} icon={CalendarClock} />
           <div className="divide-y divide-border overflow-hidden rounded-xl border border-border bg-card">
             {overview?.expiring.length ? (
@@ -200,7 +200,7 @@ export default function BusinessDashboard() {
                     className="flex w-full items-center justify-between gap-4 px-4 py-3 text-left transition-colors hover:bg-accent"
                   >
                     <span className="min-w-0">
-                      <span className="block gov-id text-sm font-medium">{cert.certificateNumber}</span>
+                      <span className="block truncate gov-id text-sm font-medium">{cert.certificateNumber}</span>
                       <span className="mt-0.5 block truncate text-xs text-muted-foreground">
                         {cert.instrumentType}
                       </span>
@@ -220,7 +220,7 @@ export default function BusinessDashboard() {
           </div>
         </section>
 
-        <section aria-labelledby="recent-certs">
+        <section aria-labelledby="recent-certs" className="min-w-0">
           <SectionHeader
             id="recent-certs"
             title={t("section.recentCertificates")}
@@ -244,7 +244,7 @@ export default function BusinessDashboard() {
                   className="flex w-full items-center justify-between gap-4 px-4 py-3 text-left transition-colors hover:bg-accent"
                 >
                   <span className="min-w-0">
-                    <GovId>{cert.certificateNumber}</GovId>
+                    <GovId className="block truncate">{cert.certificateNumber}</GovId>
                     <span className="mt-0.5 block truncate text-xs text-muted-foreground">
                       Issued {formatDate(cert.verificationDate)} · valid to{" "}
                       {formatDate(cert.validUntil)}
