@@ -194,13 +194,12 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
             </p>
             <h1 className="mt-3 font-display text-3xl leading-tight font-extrabold text-foreground">
               MetriQ — Online Verification System for Weighing and Measuring Instruments
-            </h1>
-            <p className="mt-4 max-w-md text-sm leading-6 text-muted-foreground">
-              One account for everything: register your instruments, apply for verification
-              and download the certificates your customers can check with a single scan.
-              Choose a demo role to explore a pre-populated workspace, or sign in with
-              your email address. Demo sessions use fictional records only.
-            </p>
+            </h1>              <p className="mt-4 max-w-md text-sm leading-6 text-muted-foreground">
+                Sign in with your email to register your instruments, apply for
+                verification and download certificates your customers can check with a
+                single scan — you will set up your business workspace on first sign-in.
+                Prefer to explore first? Choose a demo role with fictional records.
+              </p>
             <ul className="mt-8 space-y-3">
               {[
                 "Real role-scoped navigation and permissions",
@@ -327,7 +326,8 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
                       Sign in with email
                     </CardTitle>
                     <CardDescription>
-                      We will email a six digit verification code to this address.
+                      We will email a six digit verification code to this address. New
+                      here? Verifying the code creates your account.
                     </CardDescription>
                   </CardHeader>
                   <form onSubmit={handleEmailSubmit}>

@@ -15,7 +15,7 @@ import type { Id } from "@/convex/_generated/dataModel";
 import { useI18n } from "@/lib/i18n";
 import { useMutation, useQuery } from "convex/react";
 import { AlertTriangle, ArrowLeft, CheckCircle2, Loader2, Plus } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { toast } from "sonner";
 
@@ -48,6 +48,16 @@ export default function RegisterInstrument() {
     setForm((prev) => ({ ...prev, [key]: value }));
 
   const org = profile?.organization;
+
+  // Accounts without a workspace (fresh email sign-up) must register their
+  // establishment before instruments can be added to the registry. Department
+  // roles are left alone — registration is a business-only action.
+  useEffect(() => {
+    const role = profile?.role;
+    if (profile && !org && (role === "business" || role === "user" || role === "member")) {
+      navigate("/dashboard/onboarding", { replace: true });
+    }
+  }, [profile, org, navigate]);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();

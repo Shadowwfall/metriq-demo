@@ -22,6 +22,7 @@ const FieldVerification = lazy(() => import("./pages/FieldVerification.tsx"));
 const Instruments = lazy(() => import("./pages/Instruments.tsx"));
 const InstrumentDetail = lazy(() => import("./pages/InstrumentDetail.tsx"));
 const RegisterInstrument = lazy(() => import("./pages/RegisterInstrument.tsx"));
+const Onboarding = lazy(() => import("./pages/Onboarding.tsx"));
 const Applications = lazy(() => import("./pages/Applications.tsx"));
 const ApplicationDetail = lazy(() => import("./pages/ApplicationDetail.tsx"));
 const NewApplication = lazy(() => import("./pages/NewApplication.tsx"));
@@ -152,6 +153,14 @@ createRoot(document.getElementById("root")!).render(
                   element={
                     <RequireAuth>
                       <DashboardRouter />
+                    </RequireAuth>
+                  }
+                />
+                <Route
+                  path="/dashboard/onboarding"
+                  element={
+                    <RequireAuth>
+                      <Onboarding />
                     </RequireAuth>
                   }
                 />
