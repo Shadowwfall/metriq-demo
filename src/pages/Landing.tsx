@@ -110,8 +110,6 @@ export default function Landing() {
   const { t, lang } = useI18n();
   const { isAuthenticated } = useAuth();
   const totals = useQuery(api.verify.totals);
-  const sample = useQuery(api.verify.sampleCertificate);
-  const navigate = useNavigate();
   useAppSeed();
 
   return (
@@ -151,8 +149,7 @@ export default function Landing() {
       <section className="relative overflow-hidden border-b border-border bg-muted/30">
         <div className="grid-backdrop absolute inset-0 opacity-40" aria-hidden="true" />
         <div className="relative mx-auto max-w-7xl px-4 pt-14 pb-16 sm:px-6 lg:px-8 lg:pt-20 lg:pb-24">
-          <div className="grid items-start gap-12 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
-            <div>
+          <div className="max-w-3xl">
               <p className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-medium text-muted-foreground">
                 <Landmark className="size-3.5 text-[var(--saffron)]" aria-hidden="true" />
                 Legal Metrology · Digital Public Infrastructure
@@ -196,54 +193,6 @@ export default function Landing() {
                   </div>
                 ))}
               </dl>
-            </div>
-
-            {/* Verify card */}
-            <div className="rounded-2xl border border-border bg-card p-5 sm:p-7">
-              <div className="flex items-center gap-3">
-                <span className="flex size-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                  <ShieldCheck className="size-5" aria-hidden="true" />
-                </span>
-                <div>
-                  <h2 className="font-display text-lg font-bold text-foreground">
-                    {t("verify.title")}
-                  </h2>
-                  <p className="text-xs text-muted-foreground">
-                    No login required · Instant result
-                  </p>
-                </div>
-              </div>
-              <p className="mt-4 text-sm leading-6 text-muted-foreground">
-                {t("verify.subtitle")}
-              </p>
-              <div className="mt-4">
-                <VerifyBox />
-              </div>
-              <div className="mt-4 rounded-lg border border-border bg-muted/50 p-3">
-                <p className="text-[11px] font-semibold tracking-wide text-muted-foreground uppercase">
-                  Try a demo certificate
-                </p>
-                <div className="mt-2 flex flex-wrap gap-2">
-                  {[sample?.certificateNumber, sample?.instrumentCode]
-                    .filter((value): value is string => Boolean(value))
-                    .map((value) => (
-                      <button
-                        key={value}
-                        type="button"
-                        onClick={() => navigate(`/verify/${value}`)}
-                        className="gov-id rounded border border-border bg-background px-2 py-1 text-xs transition-colors hover:border-primary/40"
-                      >
-                        {value}
-                      </button>
-                    ))}
-                  {!sample ? (
-                    <span className="text-xs text-muted-foreground">
-                      Demo records are being prepared…
-                    </span>
-                  ) : null}
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </section>
